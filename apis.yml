@@ -1,8 +1,31 @@
 aid: mutiny-hq
 name: Mutiny HQ
-description: Mutiny HQ is a company surfaced as a portfolio company of insight-partners and added to the
-  API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Mutiny is a GTM (go-to-market) assistant built for customer-facing work — a
+  vertical AI platform for B2B revenue teams (used by Snowflake, Uber, Rippling,
+  GitLab, and Figma). It generates on-brand customer-facing assets such as deal
+  rooms, pitch decks, business cases, ABM campaigns, comparison pages, and
+  meeting recaps, and automates repetitive sales and marketing workflows through
+  an agent, skill, and routine framework. Mutiny integrates with common CRM and
+  GTM systems (Salesforce, HubSpot, Marketo, 6sense, Segment) and exposes a
+  hosted Model Context Protocol (MCP) server so agents like Claude and ChatGPT
+  can create, browse, and publish assets in conversation. Mutiny is backed by
+  Insight Partners. It does not publish a general-purpose REST API; its
+  programmatic entry point is the OAuth-protected MCP server.
 url: https://raw.githubusercontent.com/api-evangelist/mutiny-hq/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://framerusercontent.com/assets/Ec1hAhKLtluxlMfLydNP0NTrIA.png
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
@@ -11,9 +34,18 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
+- GTM
+- Sales Enablement
+- Marketing
+- Website Personalization
+- AI
+- Agents
+- MCP
+- ABM
+- Content Generation
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -23,3 +55,42 @@ maintainers:
 common:
 - type: Website
   url: https://www.mutinyhq.com/
+- type: HelpCenter
+  url: https://help.mutinyhq.com/
+- type: Documentation
+  url: https://help.mutinyhq.com/
+- type: Blog
+  url: https://www.mutinyhq.com/blog
+- type: Pricing
+  url: https://www.mutinyhq.com/pricing
+- type: SignUp
+  url: https://app.mutinyhq.com/register
+- type: Login
+  url: https://app.mutinyhq.com/login
+- type: TermsOfService
+  url: https://www.mutinyhq.com/terms
+- type: PrivacyPolicy
+  url: https://www.mutinyhq.com/privacy
+- type: GitHubOrganization
+  url: https://github.com/MutinyHQ
+- type: MCPServer
+  url: mcp/mutiny-hq-mcp.yml
+- type: Authentication
+  url: authentication/mutiny-hq-authentication.yml
+- type: OAuthScopes
+  url: scopes/mutiny-hq-scopes.yml
+- type: WellKnown
+  url: well-known/mutiny-hq-well-known.yml
+- type: Conformance
+  url: conformance/mutiny-hq-conformance.yml
+- type: Compliance
+  url: https://www.mutinyhq.com/dpa
+- type: DomainSecurity
+  url: security/mutiny-hq-domain-security.yml
+- type: LLMsTxt
+  url: llms/mutiny-hq-llms.txt
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 7
+  pass: local-v1

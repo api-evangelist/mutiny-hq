@@ -1,0 +1,28 @@
+generated: '2026-07-20'
+method: searched
+source: live probes of /.well-known/ on mutinyhq.com hosts
+hosts:
+- host: https://www.mutinyhq.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+- host: https://mcp.mutinyhq.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: mutiny-hq-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: mutiny-hq-oauth-protected-resource.json
+  - path: /.well-known/openid-configuration
+    status: 404
+notes: >-
+  The hosted Mutiny MCP server (https://mcp.mutinyhq.com) publishes RFC 8414
+  OAuth authorization-server metadata and RFC 9728 OAuth protected-resource
+  metadata. The marketing/app hosts publish no /.well-known/ documents.

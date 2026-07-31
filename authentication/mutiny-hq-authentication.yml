@@ -1,0 +1,31 @@
+generated: '2026-07-20'
+method: searched
+source: https://mcp.mutinyhq.com/.well-known/oauth-authorization-server
+docs: https://help.mutinyhq.com/articles/5947474042-setting-up-the-mutiny-mcp
+summary:
+  types: [oauth2]
+  oauth2_flows: [authorizationCode]
+  pkce: [S256]
+  dynamic_client_registration: true
+schemes:
+- name: OAuth2
+  type: oauth2
+  scheme: authorizationCode
+  authorizationUrl: https://mcp.mutinyhq.com/oauth/authorize
+  tokenUrl: https://mcp.mutinyhq.com/oauth/token
+  registrationUrl: https://mcp.mutinyhq.com/oauth/register
+  code_challenge_methods: [S256]
+  token_endpoint_auth_methods: [client_secret_post, none]
+  scopes:
+  - read_asset_groups
+  - create_asset_groups
+  - publish_asset_groups
+  - read_library_content
+  - manage_library_content
+  sources: [well-known/mutiny-hq-oauth-authorization-server.json]
+notes: >-
+  Mutiny's public programmatic surface is its hosted MCP server, protected by
+  OAuth 2.0 authorization-code flow with PKCE (S256) and RFC 7591 dynamic client
+  registration. Product/CRM integrations (Segment, Salesforce, HubSpot, Marketo)
+  are configured with per-account API keys inside the Mutiny dashboard; Mutiny
+  does not publish a general-purpose REST API.

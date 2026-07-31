@@ -1,0 +1,51 @@
+generated: '2026-07-20'
+method: searched
+status: published
+source: https://help.mutinyhq.com/articles/5947474042-setting-up-the-mutiny-mcp
+server:
+  name: mutiny
+  transport: http
+  url: https://mcp.mutinyhq.com/mcp
+  auth:
+    type: oauth2
+    flow: authorizationCode
+    pkce: S256
+    authorization_endpoint: https://mcp.mutinyhq.com/oauth/authorize
+    token_endpoint: https://mcp.mutinyhq.com/oauth/token
+    registration_endpoint: https://mcp.mutinyhq.com/oauth/register
+    dynamic_client_registration: true
+    metadata: well-known/mutiny-hq-oauth-authorization-server.json
+    scopes:
+    - read_asset_groups
+    - create_asset_groups
+    - publish_asset_groups
+    - read_library_content
+    - manage_library_content
+install:
+  claude_code: claude mcp add --transport http mutiny https://mcp.mutinyhq.com/mcp
+  claude_desktop: Settings -> Connectors -> Add custom connector -> https://mcp.mutinyhq.com/mcp
+clients:
+- Claude (web, desktop, Claude Code)
+- ChatGPT
+- Any MCP-compatible client
+# Capabilities described in the docs; exact tool names are not published by the
+# provider, so these are documented capability groups, not verbatim tool ids.
+capabilities:
+- name: create_assets
+  description: Create on-brand customer-facing assets via the Mutiny creative agent.
+  scope: create_asset_groups
+- name: browse_templates
+  description: Browse Mutiny templates and blueprints.
+  scope: read_asset_groups
+- name: manage_library_content
+  description: Upload, update, and remove items in the content library.
+  scope: manage_library_content
+- name: read_library_content
+  description: Browse content library items.
+  scope: read_library_content
+- name: publish_assets
+  description: Publish/deploy assets to production.
+  scope: publish_asset_groups
+docs:
+- https://help.mutinyhq.com/articles/5947474042-setting-up-the-mutiny-mcp
+- https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude

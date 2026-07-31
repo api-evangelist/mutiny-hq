@@ -1,0 +1,33 @@
+generated: '2026-07-20'
+method: searched
+source: https://mcp.mutinyhq.com/.well-known/oauth-authorization-server
+docs: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+schemes:
+- name: OAuth2
+  source: well-known/mutiny-hq-oauth-authorization-server.json
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://mcp.mutinyhq.com/oauth/authorize
+    tokenUrl: https://mcp.mutinyhq.com/oauth/token
+    pkce: S256
+scopes:
+- scope: read_asset_groups
+  description: View assets, templates, and blueprints.
+  flows: [authorizationCode]
+  sources: [well-known/mutiny-hq-oauth-authorization-server.json]
+- scope: create_asset_groups
+  description: Build assets and use the creative agent.
+  flows: [authorizationCode]
+  sources: [well-known/mutiny-hq-oauth-authorization-server.json]
+- scope: publish_asset_groups
+  description: Deploy/publish assets to production.
+  flows: [authorizationCode]
+  sources: [well-known/mutiny-hq-oauth-authorization-server.json]
+- scope: read_library_content
+  description: Browse content library items.
+  flows: [authorizationCode]
+  sources: [well-known/mutiny-hq-oauth-authorization-server.json]
+- scope: manage_library_content
+  description: Upload, modify, and remove content library items.
+  flows: [authorizationCode]
+  sources: [well-known/mutiny-hq-oauth-authorization-server.json]
