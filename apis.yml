@@ -34,7 +34,7 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-20'
+modified: '2026-08-13'
 tags:
 - Company
 - GTM
@@ -46,7 +46,51 @@ tags:
 - MCP
 - ABM
 - Content Generation
-apis: []
+apis:
+- name: Mutiny MCP Server
+  description: >-
+    Mutiny's hosted Model Context Protocol server and its only public programmatic
+    entry point. It exposes the workspace's asset creation, template, content library
+    and publishing capabilities to any MCP-compatible client (Claude web/Desktop/Code,
+    ChatGPT, IDE agents) as 12 annotated tools — 11 of which are visible to external
+    clients — over streamable HTTP, protected by OAuth 2.0 authorization code with
+    PKCE (S256) and RFC 7591 dynamic client registration. tools/list and initialize
+    both require a token, so live tool schemas are auth-gated; the tool catalogue
+    itself is published in Mutiny's own MCP reference.
+  humanURL: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+  baseURL: https://mcp.mutinyhq.com/mcp
+  tags:
+  - MCP
+  - Agents
+  - Content Generation
+  - Sales Enablement
+  properties:
+  - type: MCPServer
+    url: mcp/mutiny-hq-mcp.yml
+  - type: MCPServer
+    url: https://mcp.mutinyhq.com/mcp
+  - type: Documentation
+    url: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+  - type: APIReference
+    url: https://help.mutinyhq.com/articles/7238243181-mutiny-mcp-tools-reference
+  - type: GettingStarted
+    url: https://help.mutinyhq.com/articles/8733886310-getting-started-with-mutiny-in-your-ai-assistant
+  - type: Authentication
+    url: authentication/mutiny-hq-authentication.yml
+  - type: OAuthScopes
+    url: scopes/mutiny-hq-scopes.yml
+  - type: Conventions
+    url: conventions/mutiny-hq-conventions.yml
+  - type: Idempotency
+    url: conventions/mutiny-hq-conventions.yml
+  - type: ErrorCatalog
+    url: errors/mutiny-hq-problem-types.yml
+  - type: DataModel
+    url: data-model/mutiny-hq-data-model.yml
+  - type: RateLimits
+    url: rate-limits/mutiny-hq-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/mutiny-hq-lifecycle.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -84,13 +128,35 @@ common:
 - type: Conformance
   url: conformance/mutiny-hq-conformance.yml
 - type: Compliance
-  url: https://www.mutinyhq.com/dpa
+  url: https://help.mutinyhq.com/articles/4986991401-mutiny-compliance-overview
 - type: DomainSecurity
   url: security/mutiny-hq-domain-security.yml
 - type: LLMsTxt
   url: llms/mutiny-hq-llms.txt
+- type: APIReference
+  url: https://help.mutinyhq.com/articles/7238243181-mutiny-mcp-tools-reference
+- type: GettingStarted
+  url: https://help.mutinyhq.com/articles/8733886310-getting-started-with-mutiny-in-your-ai-assistant
+- type: Packages
+  url: packages/mutiny-hq-packages.yml
+- type: SDKs
+  url: packages/mutiny-hq-packages.yml
+- type: Conventions
+  url: conventions/mutiny-hq-conventions.yml
+- type: Idempotency
+  url: conventions/mutiny-hq-conventions.yml
+- type: ErrorCatalog
+  url: errors/mutiny-hq-problem-types.yml
+- type: DataModel
+  url: data-model/mutiny-hq-data-model.yml
+- type: Lifecycle
+  url: lifecycle/mutiny-hq-lifecycle.yml
+- type: Plans
+  url: plans/mutiny-hq-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/mutiny-hq-rate-limits.yml
 x-enrichment:
-  date: '2026-07-20'
+  date: '2026-08-13'
   status: enriched
   artifacts_added: 7
   pass: local-v1
