@@ -1,0 +1,95 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.mutinyhq.com/pricing
+docs:
+- https://www.mutinyhq.com/pricing
+- https://help.mutinyhq.com/articles/6000699032-how-credits-work-in-mutiny
+currency: USD
+billing_unit: credit
+plan_count: 3
+metering: >-
+  Mutiny is metered in CREDITS, not API calls. Credits are fractional and priced on
+  the work the agent performs — conversation/planning costs little or nothing,
+  building (copy, sections, pages, routines) is priced on context in and output out.
+  Credits pool across the whole workspace, unused credits roll over into the next
+  month and rolled-over credits are consumed first. Admins can set per-user monthly
+  caps. Clarifying questions and failed generations are not charged.
+plans:
+- name: Free
+  price: 0
+  currency: USD
+  period: month
+  audience: Individuals and small teams getting started with personalization.
+  included:
+    seats: Up to 5 team members
+    credits: 5 daily credits (up to 30/month) per seat
+    integrations: Unlimited integrations for 30 days
+    templates: 5
+    routines: 5 per user
+    projects: 5 per user
+    skills: unlimited
+    library: unlimited
+    domain: mutiny.app
+  features:
+  - Custom template skills
+  - Asset analytics
+  - Access to training videos
+  signup: https://app.mutinyhq.com/register
+- name: Business
+  price: 50
+  currency: USD
+  period: month
+  audience: Growing teams who need more AI usage and team controls.
+  included:
+    seats: Unlimited team members
+    credits: 50 credits per month (selectable — the pricing page exposes a credit-volume dropdown)
+    integrations: unlimited
+    templates: unlimited
+    skills: unlimited
+    routines: 20 per user
+    projects: 20 per user
+    domain: Custom subdomain
+  features:
+  - All features in Free
+  - Visitor Intelligence analytics (Outreach and Salesloft)
+  - Password protection for assets
+  signup: https://app.mutinyhq.com/register
+- name: Enterprise
+  price: 40000
+  price_qualifier: Starting at $40,000/year
+  currency: USD
+  period: year
+  audience: Large organizations needing integrations and customer success.
+  included:
+    seats: Unlimited team members
+    credits: Volume discounts for credits; custom credit limits per user
+    integrations: unlimited
+    templates: unlimited
+    routines: unlimited
+    projects: unlimited
+  features:
+  - All features in Business
+  - SSO (SAML IdP)
+  - Custom MSA and DPA terms
+  - Dedicated Growth Strategist
+  - Onboarding support
+  - Salesforce integration
+  - Mutiny Web Extension (enterprise-only)
+  contact: https://www.mutinyhq.com/talk-to-sales
+credit_cost_examples:
+  source: https://help.mutinyhq.com/articles/6000699032-how-credits-work-in-mutiny
+  default_model: Claude Opus 4.8 ("Max" mode)
+  alternate_model: Sonnet ("Balanced" mode) — approximately 50% less per action
+  approximate:
+  - {action: Edit a single line of text, credits: 0.35}
+  - {action: Change style or add a new section, credits: 0.5}
+  - {action: Larger copy or layout changes, credits: 1}
+  - {action: Create a simple page with minimal context, credits: 1.5}
+  - {action: Create a larger multi-part interactive asset with lots of context, credits: 3}
+  - {action: Data-heavy routine across multiple integrations, credits: 5}
+  - {action: Data-heavy routine across multiple integrations creating multiple assets, credits: 8}
+notes: >-
+  Pricing is published openly for the two self-serve tiers and carries a named
+  floor for Enterprise ($40,000/year), which is unusual — most enterprise tiers in
+  this cohort say only "contact sales". The credits system, not any API rate limit,
+  is the metering surface an agent operating through the MCP server consumes.

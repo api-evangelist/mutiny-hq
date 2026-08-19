@@ -1,0 +1,47 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://help.mutinyhq.com/ (full sitemap of 130 articles searched for rate limit,
+  quota and throttling documentation) plus live header inspection of
+  https://mcp.mutinyhq.com/mcp
+limit_count: 0
+limits: []
+response_headers:
+  observed: []
+  probe: >-
+    POST https://mcp.mutinyhq.com/mcp with a tools/list body returned HTTP 401 and
+    carried no RateLimit-*, X-RateLimit-* or Retry-After header — only date,
+    content-type, content-length and content-security-policy. No WWW-Authenticate
+    header was returned either (see conformance/mutiny-hq-conformance.yml).
+  checked: '2026-08-13'
+exhaustion_status: null
+metering:
+  model: credits
+  scope: workspace-wide shared pool
+  docs: https://help.mutinyhq.com/articles/6000699032-how-credits-work-in-mutiny
+  quotas:
+  - {plan: Free, quota: 5 credits per seat per day, monthly_cap: 30 per seat}
+  - {plan: Business, quota: 50 credits per month per workspace (selectable volume)}
+  - {plan: Enterprise, quota: negotiated; volume discounts and custom per-user credit limits}
+  rollover: Unused credits carry into the next month; rolled-over credits are consumed first.
+  per_user_caps: Admins can set a monthly credit cap for any individual user.
+  exhaustion_behavior: >-
+    Admins are notified with a banner as the workspace approaches its monthly pool
+    and users can request more credits; Mutiny states users are not cut off without
+    warning. No API status code or header is documented for this condition.
+  not_charged: [clarifying questions asked by the agent, failed generations or provider-side errors]
+third_party_call_volume:
+  source: https://help.mutinyhq.com/articles/5728504919-understanding-api-call-volume-when-integrating-mutiny-with-salesforce
+  note: >-
+    Mutiny documents its OWN consumption of a customer's Salesforce API quota
+    (roughly 1 API call per 2,000 records ingested, a full download on initial setup
+    or field-mapping change, then a daily delta sync). This is guidance for the
+    customer's Salesforce limits, not a limit Mutiny imposes on callers. Legacy,
+    enterprise-only feature.
+notes: >-
+  An honest zero: Mutiny publishes no request-rate limits for its MCP server and
+  returns no rate-limit signalling headers on the responses that can be observed
+  without a token. Consumption is governed entirely by the credit system, which is
+  a billing quota rather than a runtime throttle. An agent operating through the
+  Mutiny MCP has no machine-readable signal telling it how close the workspace is
+  to exhausting its pool — that is the actionable gap.

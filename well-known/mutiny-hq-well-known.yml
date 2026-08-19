@@ -1,6 +1,6 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
-source: live probes of /.well-known/ on mutinyhq.com hosts
+source: live probes of /.well-known/ on mutinyhq.com hosts (re-probed 2026-08-13)
 hosts:
 - host: https://www.mutinyhq.com
   documents:
@@ -12,6 +12,10 @@ hosts:
     status: 404
   - path: /.well-known/api-catalog
     status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
 - host: https://mcp.mutinyhq.com
   documents:
   - path: /.well-known/oauth-authorization-server
@@ -22,7 +26,32 @@ hosts:
     file: mutiny-hq-oauth-protected-resource.json
   - path: /.well-known/openid-configuration
     status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://app.mutinyhq.com
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 401
+  - path: /.well-known/agent.json
+    status: 401
+  note: >-
+    app.mutinyhq.com answers every path with 401
+    {"error":"You need to sign in or sign up before continuing."} — the whole app host
+    is authenticated, so nothing there is a discovery surface.
+- host: https://help.mutinyhq.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
 notes: >-
-  The hosted Mutiny MCP server (https://mcp.mutinyhq.com) publishes RFC 8414
-  OAuth authorization-server metadata and RFC 9728 OAuth protected-resource
-  metadata. The marketing/app hosts publish no /.well-known/ documents.
+  The hosted Mutiny MCP server (https://mcp.mutinyhq.com) publishes two real
+  documents: RFC 8414 OAuth authorization-server metadata and RFC 9728 OAuth
+  protected-resource metadata, both saved verbatim in this directory. The
+  marketing, app and help hosts publish no /.well-known/ documents. Negative results
+  here are trustworthy rather than SPA catch-alls: mcp.mutinyhq.com returns a
+  structured JSON 404 ({"message":"Route GET:<path> not found",...}) for unknown
+  paths and www.mutinyhq.com (Framer) returns a text/html "Not found" with a real 404
+  status, so no host answers 200 to arbitrary /.well-known/ paths. No security.txt is
+  served anywhere, so no SecurityTxt pointer is emitted; no agent card is served
+  anywhere, so no a2a/ artifact is written.

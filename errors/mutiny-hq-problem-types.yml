@@ -1,0 +1,59 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  Live probes of https://mcp.mutinyhq.com/mcp on 2026-08-13 (POST tools/list, POST
+  initialize, GET). Mutiny publishes no REST API and no error reference, so this
+  catalog records only errors actually observed on the wire plus the envelope they
+  arrive in.
+format: jsonrpc-2.0
+envelope:
+  shape: '{"jsonrpc":"2.0","error":{"code":<integer>,"message":<string>},"id":<id|null>}'
+  content_type: application/json; charset=utf-8
+  note: >-
+    Not RFC 9457 problem+json. The MCP surface returns JSON-RPC 2.0 error objects,
+    and the HTTP status is carried alongside the JSON-RPC code rather than in place
+    of it. Note that `id` is returned as null even when the request supplied an id,
+    so a client cannot correlate an auth failure back to its request.
+problems:
+- code: -32001
+  http_status: 401
+  title: Authentication failed.
+  message: Authentication failed.
+  observed: '2026-08-13'
+  observed_on: [tools/list, initialize]
+  meaning: >-
+    The request carried no valid OAuth bearer token for the Mutiny MCP server. Every
+    method, including the initialize handshake, is gated.
+  remediation: >-
+    Complete the OAuth 2.0 authorization-code + PKCE flow against
+    https://mcp.mutinyhq.com/oauth/authorize and present the resulting bearer token.
+    Client credentials can be obtained through RFC 7591 dynamic registration at
+    https://mcp.mutinyhq.com/oauth/register.
+  source: probed
+- code: null
+  http_status: 405
+  title: Method Not Allowed
+  observed: '2026-08-13'
+  observed_on: [GET /mcp]
+  meaning: The MCP endpoint accepts POST only; a GET returns 405 with a JSON body.
+  source: probed
+- code: null
+  http_status: 404
+  title: Not Found
+  message: '{"message":"Route GET:<path> not found","error":"Not Found","statusCode":404}'
+  observed: '2026-08-13'
+  observed_on: ['GET /.well-known/agent-card.json', 'GET /.well-known/agent.json', 'GET /openapi.json']
+  meaning: >-
+    Unknown routes on mcp.mutinyhq.com return a Fastify-style JSON 404 envelope,
+    which is a DIFFERENT shape from the JSON-RPC error envelope used by /mcp. Useful
+    negative evidence: the host does not answer 200 to arbitrary paths, so the
+    /.well-known probes in well-known/mutiny-hq-well-known.yml are true absences and
+    not SPA catch-alls.
+  source: probed
+gaps:
+- No published error reference or error-code registry for the MCP tools.
+- >-
+  Tool-level error semantics (what create_asset returns on an invalid template id,
+  what publish_asset returns when credits are exhausted) require an authenticated
+  token to observe and are not documented.
+- The JSON-RPC `id` is nulled on auth failures, preventing request correlation.

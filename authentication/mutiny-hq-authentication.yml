@@ -1,7 +1,10 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
 source: https://mcp.mutinyhq.com/.well-known/oauth-authorization-server
-docs: https://help.mutinyhq.com/articles/5947474042-setting-up-the-mutiny-mcp
+docs: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+docs_additional:
+- https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
+- https://help.mutinyhq.com/articles/6009433418-setting-up-sso-on-your-saml-idp
 summary:
   types: [oauth2]
   oauth2_flows: [authorizationCode]
@@ -23,6 +26,30 @@ schemes:
   - read_library_content
   - manage_library_content
   sources: [well-known/mutiny-hq-oauth-authorization-server.json]
+protected_resource:
+  metadata: well-known/mutiny-hq-oauth-protected-resource.json
+  resource: https://mcp.mutinyhq.com
+  authorization_servers: [https://mcp.mutinyhq.com]
+challenge:
+  probed: '2026-08-13'
+  request: POST https://mcp.mutinyhq.com/mcp with a JSON-RPC tools/list body and no token
+  http_status: 401
+  body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authentication failed."},"id":null}'
+  www_authenticate: null
+  gap: >-
+    The 401 carries no WWW-Authenticate header, so a client cannot discover the
+    RFC 9728 protected-resource metadata from the challenge itself — the metadata URL
+    has to be known out of band. Everything else in the OAuth chain (metadata, PKCE,
+    dynamic registration) is correctly published.
+sso:
+  saml: true
+  plan: Enterprise
+  docs: https://help.mutinyhq.com/articles/6009433418-setting-up-sso-on-your-saml-idp
+token_handling:
+  transport_security: HTTPS (TLS 1.2+)
+  revocable: Tokens are scoped to specific permissions and can be revoked at any time.
+  password_sharing: Mutiny states a user's password is never shared with the AI assistant.
+  source: https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
 notes: >-
   Mutiny's public programmatic surface is its hosted MCP server, protected by
   OAuth 2.0 authorization-code flow with PKCE (S256) and RFC 7591 dynamic client

@@ -1,0 +1,86 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  Registry metadata from registry.npmjs.org, crates.io and the MutinyHQ GitHub
+  organization, plus the Mutiny Help Center. npm, PyPI, RubyGems, Maven Central,
+  NuGet, pkg.go.dev, Packagist and crates.io were all queried for first-party
+  Mutiny client libraries.
+notes: >-
+  Mutiny publishes no general-purpose REST API, so there is no server-side API
+  client SDK family. The one first-party client library on a public registry is
+  @mutinyhq/react-sdk, which wraps the LEGACY website-personalization product and
+  has not shipped a release since 2023-03-27 — its source repository
+  (github.com/MutinyHQ/web-sdks) now returns 404. The current programmatic entry
+  point is the hosted MCP server, which needs no client library (any MCP client
+  speaks to it over HTTP + OAuth). mutiny-diff/mdiff is a first-party open-source
+  developer tool published by the company; it is NOT a client for the Mutiny
+  product API and no CLI pointer is emitted for it.
+packages:
+- language: javascript
+  registry: npm
+  name: "@mutinyhq/react-sdk"
+  url: https://www.npmjs.com/package/@mutinyhq/react-sdk
+  install: npm install @mutinyhq/react-sdk
+  official: true
+  api_client: true
+  version: 0.1.2
+  published: '2023-03-27'
+  source_repo: https://github.com/MutinyHQ/web-sdks
+  note: >-
+    First-party React SDK for the legacy Mutiny website-personalization product.
+    Three published versions (0.1.0, 0.1.1, 0.1.2); latest release 2023-03-27, more
+    than three years before this pass. The declared source repository
+    github.com/MutinyHQ/web-sdks returns HTTP 404, so the package is effectively
+    unmaintained — a decay signal, recorded rather than hidden.
+- language: rust
+  registry: crates.io
+  name: mutiny-diff
+  url: https://crates.io/crates/mutiny-diff
+  install: cargo install mutiny-diff
+  official: true
+  api_client: false
+  version: 0.1.22
+  published: '2026-03-25'
+  source_repo: https://github.com/MutinyHQ/mdiff
+  note: >-
+    First-party open-source terminal UI (binary name `mdiff`) for reviewing git
+    diffs from coding-agent worktrees. Internal developer tooling open-sourced by
+    Mutiny; unrelated to the Mutiny product API.
+- language: rust
+  registry: homebrew
+  name: mutinyhq/tap/mdiff
+  url: https://github.com/MutinyHQ/homebrew-tap
+  install: brew install mutinyhq/tap/mdiff
+  official: true
+  api_client: false
+  version: 0.1.19
+  published: '2026-03-23'
+  source_repo: https://github.com/MutinyHQ/mdiff
+  note: >-
+    Homebrew tap distribution of the same mdiff binary. Formula pins version
+    0.1.19 (GitHub release v0.1.19, 2026-03-23) — three patch releases behind the
+    crates.io publication of 0.1.22 on 2026-03-25.
+- language: javascript
+  registry: chrome-web-store
+  name: Mutiny Web Extension
+  url: https://chrome.google.com/webstore/detail/mutiny-web-extension/edhckdkdhmoeakkggdckeadggdkoiiel
+  install: Add to Chrome from the Chrome Web Store
+  official: true
+  api_client: false
+  version: null
+  published: null
+  note: >-
+    Enterprise-only Chrome extension that surfaces target-account web activity.
+    The Chrome Web Store listing renders client-side and exposes no unauthenticated
+    metadata endpoint, so no version or publication date could be read — checked,
+    nothing to record. Documented at
+    https://help.mutinyhq.com/articles/8370581325-how-to-install-and-setup-the-mutiny-web-extension
+registries_checked:
+- {registry: npm, result: 1 first-party package (@mutinyhq/react-sdk); the @mutinyhq scope holds no other public package}
+- {registry: crates.io, result: 1 first-party crate (mutiny-diff)}
+- {registry: pypi, result: 'no first-party package — "mutiny" is jack1142/Mutiny (Revolt API wrapper) and "mutiny-sdk" is an unofficial Midjourney SDK; name collisions, not Mutiny HQ'}
+- {registry: rubygems, result: 'no first-party gem — "mutiny" is an unrelated mutation-testing framework'}
+- {registry: maven-central, result: none}
+- {registry: nuget, result: none}
+- {registry: pkg.go.dev, result: none}
+- {registry: packagist, result: none}

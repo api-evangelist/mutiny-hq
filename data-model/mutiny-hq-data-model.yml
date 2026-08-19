@@ -1,0 +1,88 @@
+generated: '2026-08-13'
+method: derived
+source: mcp/mutiny-hq-mcp.yml
+source_docs:
+- https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+- https://help.mutinyhq.com/articles/7238243181-mutiny-mcp-tools-reference
+- https://help.mutinyhq.com/articles/7184327535-library-overview
+- https://help.mutinyhq.com/articles/6580421722-templates-deep-dive
+note: >-
+  There is no OpenAPI to derive schemas from. This graph is derived from the twelve
+  published MCP tools and the entities their names and descriptions name explicitly.
+  Field-level attributes are only listed where Mutiny's own tool descriptions state
+  them; tool input schemas are OAuth-gated and are NOT reconstructed here. Treat this
+  as the agent-visible entity graph, not a database model.
+entities:
+- name: Asset
+  description: >-
+    A customer-facing artifact — landing page, proposal, pitch deck, case study,
+    deal room, meeting recap. The central object of the Mutiny MCP surface.
+  attributes:
+  - {name: status, evidence: 'list_assets filters on status'}
+  - {name: creator, evidence: 'list_assets filters on creator and defaults to the current user'}
+  - {name: links, evidence: 'get_asset returns links'}
+  - {name: screenshot, evidence: 'get_asset returns a screenshot'}
+  - {name: live_url, evidence: 'publish_asset generates the live/shareable link'}
+  tools: [list_assets, get_asset, create_asset, send_agent_message, publish_asset]
+- name: Template
+  description: A company-approved starting structure for an asset, created in the Mutiny app.
+  attributes:
+  - {name: description, evidence: 'the tools reference describes updating a template description'}
+  tools: [list_templates]
+- name: Blueprint
+  description: >-
+    A pre-built asset pattern published by Mutiny (deal room, pitch deck, 1:1 ABM,
+    competitive comparison and 14 more, each with a page under mutinyhq.com/blueprints).
+  availability: >-
+    Referenced as a creation source by create_asset but explicitly NOT browsable
+    through the MCP — Mutiny directs MCP users to templates instead.
+  tools: [create_asset]
+- name: LibraryContent
+  description: An item in the workspace content library, used as a context source for asset generation.
+  attributes:
+  - {name: title}
+  - {name: description}
+  - {name: tags}
+  - {name: type}
+  evidence: update_library_content updates title, description and tags; list_library_content filters on query, tags, type and sort.
+  tools: [list_library_content, create_library_content, update_library_content, delete_library_content]
+- name: WorkflowRun
+  description: >-
+    A queued execution of the Mutiny agent against an asset. Created by create_asset
+    (initial prompt) and by send_agent_message (each refinement).
+  attributes:
+  - {name: status, evidence: 'get_task_status returns workflow run status'}
+  tools: [create_asset, send_agent_message, get_task_status]
+  visibility: get_task_status is app-only and hidden from external MCP clients.
+- name: AssetAnalytics
+  description: View and click metrics for an asset, available all-time or over a timestamp window.
+  attributes:
+  - {name: views}
+  - {name: clicks}
+  - {name: start}
+  - {name: end}
+  tools: [get_asset, get_assets_analytics]
+- name: Workspace
+  description: >-
+    The company tenant that owns templates, library content, brand settings, the
+    shared credit pool and per-user credit caps.
+  attributes:
+  - {name: credit_pool, evidence: 'help.mutinyhq.com/articles/6000699032-how-credits-work-in-mutiny'}
+  - {name: per_user_credit_limit}
+  - {name: custom_subdomain, evidence: 'Business plan feature'}
+  tools: []
+relationships:
+- {from: Asset, to: Template, type: belongs_to, via: create_asset template source, cardinality: optional}
+- {from: Asset, to: Blueprint, type: belongs_to, via: create_asset blueprint source, cardinality: optional}
+- {from: Asset, to: WorkflowRun, type: has_many, via: create_asset and send_agent_message queue runs}
+- {from: Asset, to: AssetAnalytics, type: has_one, via: get_asset all-time analytics}
+- {from: Asset, to: LibraryContent, type: has_many, via: library items supplied as context sources}
+- {from: Workspace, to: Template, type: has_many, via: company-approved templates}
+- {from: Workspace, to: LibraryContent, type: has_many, via: workspace content library}
+- {from: Workspace, to: Asset, type: has_many, via: assets created by workspace members}
+id_prefixes: []
+render: null
+gaps:
+- Identifier formats and prefixes are not published for any entity.
+- Tool input schemas require an authenticated OAuth token; field types are therefore unknown.
+- No public object reference exists — the Help Center documents the UI, not a data model.

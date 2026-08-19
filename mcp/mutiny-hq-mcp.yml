@@ -1,7 +1,7 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
 status: published
-source: https://help.mutinyhq.com/articles/5947474042-setting-up-the-mutiny-mcp
+source: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
 server:
   name: mutiny
   transport: http
@@ -21,31 +21,110 @@ server:
     - publish_asset_groups
     - read_library_content
     - manage_library_content
+deployment:
+  mode: remote
+  endpoint: https://mcp.mutinyhq.com/mcp
+  auth: oauth
+  verified: probed
+  probe: gated
+  probe_detail: >-
+    POST tools/list and POST initialize against https://mcp.mutinyhq.com/mcp both
+    returned HTTP 401 with the JSON-RPC body
+    {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authentication failed."},"id":null}.
+    The server is live and reachable but the live tool schemas require an
+    authenticated OAuth token, so the tool list below is transcribed from Mutiny's
+    own published tools reference rather than from tools/list. GET on the same URL
+    returns 405 (POST-only).
+  checked: '2026-08-13'
 install:
   claude_code: claude mcp add --transport http mutiny https://mcp.mutinyhq.com/mcp
   claude_desktop: Settings -> Connectors -> Add custom connector -> https://mcp.mutinyhq.com/mcp
 clients:
-- Claude (web, desktop, Claude Code)
-- ChatGPT
-- Any MCP-compatible client
-# Capabilities described in the docs; exact tool names are not published by the
-# provider, so these are documented capability groups, not verbatim tool ids.
-capabilities:
-- name: create_assets
-  description: Create on-brand customer-facing assets via the Mutiny creative agent.
-  scope: create_asset_groups
-- name: browse_templates
-  description: Browse Mutiny templates and blueprints.
-  scope: read_asset_groups
-- name: manage_library_content
-  description: Upload, update, and remove items in the content library.
-  scope: manage_library_content
-- name: read_library_content
-  description: Browse content library items.
-  scope: read_library_content
-- name: publish_assets
-  description: Publish/deploy assets to production.
-  scope: publish_asset_groups
+- Claude web (claude.ai) via Connectors
+- Claude Desktop (macOS and Windows) via Connectors
+- Claude Code (CLI) via MCP server configuration
+- ChatGPT web and Desktop via Apps
+- Any client supporting remote MCP servers over HTTP with OAuth
+tool_count: 12
+tool_count_external: 11
+tool_annotations:
+  declared: [readOnlyHint, destructiveHint, idempotentHint, openWorldHint]
+  source: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+  note: >-
+    Mutiny states that all tools carry readOnlyHint, destructiveHint,
+    idempotentHint and openWorldHint annotations. The per-tool annotation VALUES
+    could not be read because tools/list is OAuth-gated; only the presence of the
+    annotation set is provider-published. Input schemas likewise require
+    authenticated introspection and are deliberately not reproduced here.
+tools:
+- name: list_assets
+  category: asset-management
+  access: read
+  description: List existing assets with optional filters for status and creator (defaults to assets created by the current user).
+- name: get_asset
+  category: asset-management
+  access: read
+  description: Retrieve a specific asset with links, screenshot, and all-time analytics (views/clicks).
+- name: get_assets_analytics
+  category: asset-management
+  access: read
+  description: Get ranged analytics (views/clicks) for multiple assets over a start/end timestamp window.
+- name: create_asset
+  category: asset-management
+  access: write
+  description: Create an asset from a template, blueprint, or from scratch and queue the initial agent prompt as a workflow run.
+- name: send_agent_message
+  category: asset-management
+  access: write
+  description: Send a refinement message to an existing asset agent and queue a new workflow run for iterative revisions.
+- name: publish_asset
+  category: asset-management
+  access: write
+  description: Publish an asset to generate its live/shareable link.
+- name: get_task_status
+  category: asset-management
+  access: read
+  visibility: app-only
+  description: Returns workflow run status for the interactive asset preview widget's polling flow. Hidden from external MCP clients.
+- name: list_templates
+  category: templates
+  access: read
+  description: List the company's approved templates for choosing a starting point before asset creation (supports a search query).
+- name: list_library_content
+  category: content-library
+  access: read
+  description: Search library content with filters (query, tags, type, sort) to gather context sources for asset creation or refinement.
+- name: create_library_content
+  category: content-library
+  access: write
+  description: Upload content to the library from URLs.
+- name: update_library_content
+  category: content-library
+  access: write
+  description: Update library content metadata (title, description, tags).
+- name: delete_library_content
+  category: content-library
+  access: write
+  destructive: true
+  description: Remove library content.
+limitations:
+- Blueprints from the Mutiny app are not available through the MCP; use a template instead.
+- get_task_status is app-only and hidden from external clients.
+custom_mcp_clients: >-
+  Mutiny is also an MCP CLIENT — owners/admins can attach their own third-party MCP
+  server URLs on the Integrations page (shared or personal), and the Mutiny agent
+  will call those tools. See
+  https://help.mutinyhq.com/articles/8133619630-connect-your-tools-to-mutiny
+data_handling:
+  source: https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
+  transmitted: [tool name and parameters, tool responses]
+  not_transmitted: [conversation content, prompts, chat history, other connectors' tool results, CRM records, analytics, billing information]
+  transport_security: HTTPS (TLS 1.2+)
+  token_revocation: Tokens are scoped to specific permissions and can be revoked at any time.
 docs:
-- https://help.mutinyhq.com/articles/5947474042-setting-up-the-mutiny-mcp
+- https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+- https://help.mutinyhq.com/articles/7238243181-mutiny-mcp-tools-reference
+- https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
 - https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+- https://help.mutinyhq.com/articles/8839261926-connecting-mutiny-to-chatgpt
+- https://help.mutinyhq.com/articles/8733886310-getting-started-with-mutiny-in-your-ai-assistant

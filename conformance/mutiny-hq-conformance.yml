@@ -1,33 +1,98 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: searched
-source: https://www.mutinyhq.com/dpa
+source:
+- https://help.mutinyhq.com/articles/4986991401-mutiny-compliance-overview
+- https://www.mutinyhq.com/dpa
+- https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+- https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
+- live probes of https://mcp.mutinyhq.com on 2026-08-13
 standards:
 - id: oauth2
   conforms: true
-  evidence: MCP server publishes RFC 8414 OAuth authorization-server metadata; authorization-code flow with PKCE.
+  evidence: MCP server publishes RFC 8414 OAuth authorization-server metadata; authorization-code flow with PKCE (S256).
+- id: rfc7636-pkce
+  conforms: true
+  evidence: code_challenge_methods_supported is ["S256"] in the authorization-server metadata; the MCP security article states OAuth 2.0 with PKCE.
 - id: rfc8414-oauth-authorization-server-metadata
   conforms: true
   evidence: https://mcp.mutinyhq.com/.well-known/oauth-authorization-server returns 200.
 - id: rfc9728-oauth-protected-resource-metadata
-  conforms: true
-  evidence: https://mcp.mutinyhq.com/.well-known/oauth-protected-resource returns 200.
+  conforms: partial
+  evidence: >-
+    https://mcp.mutinyhq.com/.well-known/oauth-protected-resource returns 200 with
+    resource, authorization_servers and scopes_supported. However, the 401 returned by
+    POST https://mcp.mutinyhq.com/mcp carries NO WWW-Authenticate header pointing at
+    that metadata (probed 2026-08-13), which is the discovery step RFC 9728 §5.1 and
+    the MCP authorization spec require. A client that has not been told the metadata
+    URL out of band cannot discover it from the challenge.
 - id: rfc7591-dynamic-client-registration
   conforms: true
-  evidence: registration_endpoint present in authorization-server metadata.
+  evidence: registration_endpoint https://mcp.mutinyhq.com/oauth/register present in authorization-server metadata.
 - id: mcp
   conforms: true
-  evidence: Official hosted Model Context Protocol server at https://mcp.mutinyhq.com/mcp.
+  evidence: >-
+    Official hosted Model Context Protocol server at https://mcp.mutinyhq.com/mcp over
+    streamable HTTP; 12 tools published across asset management, templates and content
+    library.
+- id: mcp-tool-annotations
+  conforms: true
+  evidence: >-
+    Mutiny states all tools carry readOnlyHint, destructiveHint, idempotentHint and
+    openWorldHint annotations
+    (https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp).
+    Annotation VALUES are OAuth-gated and unverified.
+- id: jsonrpc-2.0
+  conforms: true
+  evidence: 'Probed error body: {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authentication failed."},"id":null}'
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors are JSON-RPC 2.0 error objects, not application/problem+json.
+- id: openapi
+  conforms: false
+  evidence: >-
+    No OpenAPI is published. /openapi.json, /openapi.yaml, /swagger.json and /api-docs
+    were probed on www, app, api, help and mcp hosts on 2026-08-13 — all 404 or 401.
+- id: asyncapi
+  conforms: false
+  evidence: No event, streaming or webhook surface exists; nothing to describe.
+- id: a2a
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json return 404 on every Mutiny host.
 - id: soc2-type-ii
   conforms: true
-  evidence: 'DPA (Annex): "Provider has achieved or is pursuing the following certifications: SOC 2 Type II."'
+  evidence: >-
+    "Our Type II certification means we've undergone a rigorous audit of our security
+    controls over a minimum 6-month period" — Mutiny Compliance Overview. Reports are
+    available to Enterprise customers under NDA on request to support@mutinyhq.com.
+- id: iso-27001
+  conforms: false
+  evidence: '"Mutiny does not have any ISO certifications." — Mutiny Compliance Overview (explicit provider statement).'
 - id: gdpr
   conforms: true
-  evidence: Mutiny publishes a GDPR-compliant DPA covering GDPR, UK Data Protection Law, and Swiss FADP.
+  evidence: Mutiny publishes a GDPR-compliant DPA covering GDPR, UK Data Protection Law and Swiss FADP, plus a dedicated GDPR compliance article and a designated Security Officer.
 - id: ccpa-cpra
   conforms: true
-  evidence: DPA covers CCPA/CPRA California privacy law obligations.
+  evidence: DPA and the compliance overview cover CCPA/CPRA California privacy obligations.
+- id: saml-sso
+  conforms: true
+  evidence: 'SSO on a customer SAML IdP is documented and sold on the Enterprise plan: https://help.mutinyhq.com/articles/6009433418-setting-up-sso-on-your-saml-idp'
 compliance:
-  program_url: https://www.mutinyhq.com/dpa
+  program_url: https://help.mutinyhq.com/articles/4986991401-mutiny-compliance-overview
+  legal_url: https://www.mutinyhq.com/dpa
   certifications: [SOC 2 Type II]
+  certifications_explicitly_absent: [ISO 27001, ISO 27017, ISO 27018]
   privacy_frameworks: [GDPR, CCPA/CPRA, UK Data Protection Law, Swiss FADP]
+  breach_notification: 72 hours to customers, supervisory authority and users (GDPR commitment)
+  report_access: SOC 2 Type II reports to Enterprise customers under NDA via support@mutinyhq.com
   infrastructure: AWS (SOC 2 Type II, ISO 27001 at the infrastructure layer)
+  trust_center: null
+  trust_center_note: >-
+    No trust portal exists — trust.mutinyhq.com and security.mutinyhq.com do not
+    resolve, and /trust, /security and /.well-known/security.txt all 404 on
+    www.mutinyhq.com. The compliance posture is published as a Help Center article
+    instead, which is real but not machine-readable and carries no vulnerability
+    disclosure contact.
+gaps:
+- No WWW-Authenticate challenge on the MCP 401, breaking RFC 9728 metadata discovery.
+- No security.txt and no published vulnerability disclosure policy or contact.
+- No machine-readable compliance artifact; certifications are prose in a help article.

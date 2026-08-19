@@ -1,0 +1,72 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://www.mutinyhq.com/sitemap.xml (81 URLs), https://help.mutinyhq.com/llms.txt
+  and https://help.mutinyhq.com/sitemap.xml (130 articles), plus direct probes of the
+  conventional status/changelog/roadmap paths on 2026-08-13.
+versioning:
+  scheme: null
+  current: null
+  docs: null
+  note: >-
+    No API version appears in the MCP endpoint path (https://mcp.mutinyhq.com/mcp) and
+    no versioning or date-pinning policy is published. The MCP protocol version is
+    negotiated in the OAuth-gated initialize handshake.
+deprecation:
+  policy_url: null
+  sunset_header: null
+  note: >-
+    No deprecation or sunset policy is published. Mutiny does label superseded
+    features in the Help Center — the Salesforce integration article is marked "This
+    article covers details for a legacy Mutiny feature" and the @mutinyhq/react-sdk
+    npm package wraps the legacy website-personalization product — but there is no
+    stated notice period, no sunset date, and no RFC 8594 header support to verify.
+  legacy_surfaces:
+  - {surface: Legacy Salesforce integration, evidence: 'https://help.mutinyhq.com/articles/7319886866-salesforce-integration-overview'}
+  - {surface: '@mutinyhq/react-sdk (website personalization)', evidence: 'last npm release 2023-03-27; source repo github.com/MutinyHQ/web-sdks returns 404'}
+sla:
+  url: null
+  uptime_target: null
+status_page:
+  url: null
+  probes:
+  - {url: 'https://status.mutinyhq.com', status: 0, result: DNS does not resolve}
+  - {url: 'https://mutinyhq.statuspage.io', status: 200, result: 'FALSE POSITIVE — redirects to the Atlassian Statuspage marketing site (atlassian.com/software/statuspage); /api/v2/summary.json returns the same HTML. No Mutiny status page is hosted there.'}
+  note: >-
+    Recorded explicitly because the 200 on mutinyhq.statuspage.io would otherwise be
+    read as a served status page. It is not one, so no StatusPage pointer is emitted.
+changelog:
+  url: null
+  probes:
+  - {url: 'https://www.mutinyhq.com/changelog', status: 404}
+  - {url: 'https://www.mutinyhq.com/whats-new', status: 404}
+  - {url: 'https://www.mutinyhq.com/product-updates', status: 404}
+  - {url: 'https://www.mutinyhq.com/releases', status: 404}
+  note: >-
+    No dated changelog or release-notes surface. Help Center articles carry only a
+    relative "Last updated N months ago" stamp, which is not a change record.
+roadmap:
+  url: null
+  probes:
+  - {url: 'https://www.mutinyhq.com/roadmap', status: 404}
+support:
+  email: support@mutinyhq.com
+  help_center: https://help.mutinyhq.com/
+  ticketing: Submit a Ticket (Pylon) from any Help Center page
+  sales: https://www.mutinyhq.com/talk-to-sales
+infrastructure:
+  egress_ip: 52.70.239.199
+  egress_ip_dns: known-ips.mutinyhq.com
+  editor_domain: canvas.peak-achoo.com
+  source: https://help.mutinyhq.com/articles/3777320444-whitelisting-mutiny-s-ip-address
+  note: >-
+    Mutiny publishes its outbound IP as a queryable DNS A record
+    (known-ips.mutinyhq.com) explicitly "for machine consumption", so an allowlist can
+    stay current automatically. That is a genuinely machine-readable operational
+    surface and is one of the few Mutiny publishes.
+deprecated_operations: []
+notes: >-
+  Operationally, Mutiny publishes none of the four standard transparency surfaces —
+  no status page, no changelog, no roadmap, no deprecation policy — for a product
+  whose only programmatic entry point is a hosted MCP server that agents are expected
+  to depend on. The one bright spot is the machine-readable egress-IP DNS record.

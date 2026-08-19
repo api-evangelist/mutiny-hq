@@ -1,0 +1,104 @@
+generated: '2026-08-13'
+method: searched
+source:
+- https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+- https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
+- https://mcp.mutinyhq.com/.well-known/oauth-authorization-server
+- live probes of https://mcp.mutinyhq.com/mcp on 2026-08-13
+surface: >-
+  Mutiny publishes no REST API. Every cross-cutting convention below describes the
+  hosted Model Context Protocol server at https://mcp.mutinyhq.com/mcp, which is the
+  only programmatic entry point. Where a convention has no published answer that is
+  recorded as null rather than guessed.
+protocol:
+  name: Model Context Protocol
+  transport: Streamable HTTP (POST only — GET returns 405)
+  envelope: JSON-RPC 2.0
+  endpoint: https://mcp.mutinyhq.com/mcp
+authentication:
+  style: OAuth 2.0 authorization code with PKCE (S256)
+  dynamic_client_registration: true
+  token_type: bearer
+  scoped: true
+  revocable: Tokens are scoped to specific permissions and can be revoked at any time.
+  detail: authentication/mutiny-hq-authentication.yml
+  scopes: scopes/mutiny-hq-scopes.yml
+idempotency:
+  supported: true
+  mechanism: MCP tool annotations
+  header: null
+  key_scope: null
+  retention: null
+  detail: >-
+    Mutiny states that all MCP tools are published with proper readOnlyHint,
+    destructiveHint, idempotentHint and openWorldHint annotations, so a client can
+    read per-tool retry safety off the tool definition before calling it. That is a
+    real, provider-published idempotency contract for the agent surface — it is NOT
+    an Idempotency-Key request header, and there is no documented dedupe window or
+    replay guarantee. The per-tool annotation VALUES could not be verified because
+    tools/list is OAuth-gated (HTTP 401), so only the presence of the annotation set
+    is evidenced.
+  evidence: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
+  destructive_operations: [delete_library_content]
+  write_operations: [create_asset, send_agent_message, publish_asset, create_library_content, update_library_content]
+  read_operations: [list_assets, get_asset, get_assets_analytics, list_templates, list_library_content, get_task_status]
+async_execution:
+  supported: true
+  detail: >-
+    create_asset and send_agent_message do not return a finished asset — each queues
+    an agent WORKFLOW RUN. Completion is observed by polling get_task_status, which
+    Mutiny marks app-only and hides from external MCP clients. External agents
+    therefore have no published way to poll a queued run to completion; they re-read
+    the asset with get_asset instead.
+  gap: >-
+    The only status-polling tool is withheld from external clients, so an external
+    agent cannot deterministically await a queued generation.
+pagination:
+  style: null
+  detail: >-
+    Not documented. list_assets, list_templates and list_library_content are
+    described as supporting filters (status, creator, query, tags, type, sort) but no
+    cursor, page or limit parameter is published, and the input schemas are
+    OAuth-gated.
+filtering:
+  list_assets: [status, creator]
+  list_templates: [search query]
+  list_library_content: [query, tags, type, sort]
+  defaults:
+    list_assets: Defaults to assets created by the current user.
+field_expansion:
+  supported: null
+metadata:
+  supported: true
+  detail: Library content carries title, description and tags, updatable through update_library_content.
+request_tracing:
+  request_id_header: null
+  detail: No request-id or correlation header is documented, and none was returned on the observed 401 response.
+versioning:
+  scheme: null
+  current: null
+  detail: >-
+    No API version appears in the MCP endpoint path and Mutiny publishes no version
+    or date-pinning scheme. The MCP protocol version is negotiated in the initialize
+    handshake, which is OAuth-gated.
+error_envelope:
+  format: JSON-RPC 2.0 error object
+  shape: '{"jsonrpc":"2.0","error":{"code":<int>,"message":<string>},"id":<id|null>}'
+  detail: errors/mutiny-hq-problem-types.yml
+rate_limit_signalling:
+  headers: []
+  detail: rate-limits/mutiny-hq-rate-limits.yml
+  note: No rate-limit headers are returned and no request-rate limits are published; consumption is metered in credits.
+data_handling:
+  transmitted: [tool name and parameters, tool responses]
+  not_transmitted: [conversation content, prompts, chat history, other connectors' tool results, CRM records, analytics, billing]
+  transport_security: HTTPS (TLS 1.2+)
+  source: https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
+cross_links:
+  authentication: authentication/mutiny-hq-authentication.yml
+  scopes: scopes/mutiny-hq-scopes.yml
+  errors: errors/mutiny-hq-problem-types.yml
+  lifecycle: lifecycle/mutiny-hq-lifecycle.yml
+  rate_limits: rate-limits/mutiny-hq-rate-limits.yml
+  mcp: mcp/mutiny-hq-mcp.yml
+  data_model: data-model/mutiny-hq-data-model.yml
