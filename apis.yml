@@ -182,3 +182,5 @@ x-enrichment:
   status: enriched
   artifacts_added: 7
   pass: local-v1
+x-parent: mutiny
+x-relationship: product

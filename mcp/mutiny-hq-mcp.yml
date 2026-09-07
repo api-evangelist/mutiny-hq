@@ -24,18 +24,10 @@ server:
 deployment:
   mode: remote
   endpoint: https://mcp.mutinyhq.com/mcp
-  auth: oauth
   verified: probed
   probe: gated
-  probe_detail: >-
-    POST tools/list and POST initialize against https://mcp.mutinyhq.com/mcp both
-    returned HTTP 401 with the JSON-RPC body
-    {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authentication failed."},"id":null}.
-    The server is live and reachable but the live tool schemas require an
-    authenticated OAuth token, so the tool list below is transcribed from Mutiny's
-    own published tools reference rather than from tools/list. GET on the same URL
-    returns 405 (POST-only).
-  checked: '2026-08-13'
+  checked: '2026-08-12'
+  source: catalog MCP census
 install:
   claude_code: claude mcp add --transport http mutiny https://mcp.mutinyhq.com/mcp
   claude_desktop: Settings -> Connectors -> Add custom connector -> https://mcp.mutinyhq.com/mcp
@@ -48,19 +40,22 @@ clients:
 tool_count: 12
 tool_count_external: 11
 tool_annotations:
-  declared: [readOnlyHint, destructiveHint, idempotentHint, openWorldHint]
+  declared:
+  - readOnlyHint
+  - destructiveHint
+  - idempotentHint
+  - openWorldHint
   source: https://help.mutinyhq.com/articles/2908744000-mutiny-model-context-protocol-mcp
-  note: >-
-    Mutiny states that all tools carry readOnlyHint, destructiveHint,
-    idempotentHint and openWorldHint annotations. The per-tool annotation VALUES
-    could not be read because tools/list is OAuth-gated; only the presence of the
-    annotation set is provider-published. Input schemas likewise require
-    authenticated introspection and are deliberately not reproduced here.
+  note: Mutiny states that all tools carry readOnlyHint, destructiveHint, idempotentHint and openWorldHint
+    annotations. The per-tool annotation VALUES could not be read because tools/list is OAuth-gated; only
+    the presence of the annotation set is provider-published. Input schemas likewise require authenticated
+    introspection and are deliberately not reproduced here.
 tools:
 - name: list_assets
   category: asset-management
   access: read
-  description: List existing assets with optional filters for status and creator (defaults to assets created by the current user).
+  description: List existing assets with optional filters for status and creator (defaults to assets created
+    by the current user).
 - name: get_asset
   category: asset-management
   access: read
@@ -72,11 +67,13 @@ tools:
 - name: create_asset
   category: asset-management
   access: write
-  description: Create an asset from a template, blueprint, or from scratch and queue the initial agent prompt as a workflow run.
+  description: Create an asset from a template, blueprint, or from scratch and queue the initial agent
+    prompt as a workflow run.
 - name: send_agent_message
   category: asset-management
   access: write
-  description: Send a refinement message to an existing asset agent and queue a new workflow run for iterative revisions.
+  description: Send a refinement message to an existing asset agent and queue a new workflow run for iterative
+    revisions.
 - name: publish_asset
   category: asset-management
   access: write
@@ -85,15 +82,18 @@ tools:
   category: asset-management
   access: read
   visibility: app-only
-  description: Returns workflow run status for the interactive asset preview widget's polling flow. Hidden from external MCP clients.
+  description: Returns workflow run status for the interactive asset preview widget's polling flow. Hidden
+    from external MCP clients.
 - name: list_templates
   category: templates
   access: read
-  description: List the company's approved templates for choosing a starting point before asset creation (supports a search query).
+  description: List the company's approved templates for choosing a starting point before asset creation
+    (supports a search query).
 - name: list_library_content
   category: content-library
   access: read
-  description: Search library content with filters (query, tags, type, sort) to gather context sources for asset creation or refinement.
+  description: Search library content with filters (query, tags, type, sort) to gather context sources
+    for asset creation or refinement.
 - name: create_library_content
   category: content-library
   access: write
@@ -110,15 +110,22 @@ tools:
 limitations:
 - Blueprints from the Mutiny app are not available through the MCP; use a template instead.
 - get_task_status is app-only and hidden from external clients.
-custom_mcp_clients: >-
-  Mutiny is also an MCP CLIENT — owners/admins can attach their own third-party MCP
-  server URLs on the Integrations page (shared or personal), and the Mutiny agent
-  will call those tools. See
-  https://help.mutinyhq.com/articles/8133619630-connect-your-tools-to-mutiny
+custom_mcp_clients: Mutiny is also an MCP CLIENT — owners/admins can attach their own third-party MCP
+  server URLs on the Integrations page (shared or personal), and the Mutiny agent will call those tools.
+  See https://help.mutinyhq.com/articles/8133619630-connect-your-tools-to-mutiny
 data_handling:
   source: https://help.mutinyhq.com/articles/5255538544-mcp-data-handling-security
-  transmitted: [tool name and parameters, tool responses]
-  not_transmitted: [conversation content, prompts, chat history, other connectors' tool results, CRM records, analytics, billing information]
+  transmitted:
+  - tool name and parameters
+  - tool responses
+  not_transmitted:
+  - conversation content
+  - prompts
+  - chat history
+  - other connectors' tool results
+  - CRM records
+  - analytics
+  - billing information
   transport_security: HTTPS (TLS 1.2+)
   token_revocation: Tokens are scoped to specific permissions and can be revoked at any time.
 docs:
