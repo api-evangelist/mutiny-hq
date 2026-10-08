@@ -93,3 +93,32 @@ notes: >-
   floor for Enterprise ($40,000/year), which is unusual — most enterprise tiers in
   this cohort say only "contact sales". The credits system, not any API rate limit,
   is the metering surface an agent operating through the MCP server consumes.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Free
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Business
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - year
